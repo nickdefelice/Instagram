@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Instagram Feed</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    </head>
+    <body>
+        <div id="wrapper">
+            <div style="margin-bottom: 50px;">
+                <p>Get userid by username :<a href="https://smashballoon.com/instagram-feed/find-instagram-user-id/" target="_blank">Get UserID</a></p>
+            </div>
+            <div id="instagram_pics"></div>
+            <script type="text/javascript">
+                function feed() {
+                    var maxImages = 20;
+                    $.ajax({
+                        method: "GET",
+                        url: 'https://api.instagram.com/v1/users/2796811886/media/recent/?access_token=3190653665.3a81a9f.2c62bdf1dce246caaea39c1241ca9d50&count=" + maxImages',
+                        dataType: "jsonp",
+                        success: function (data) {
+                            if (data.data) {
+                                if (data.data.length < maxImages) {
+                                    maxImages = data.data.length;
+                                }
+                                for (var i = 0; i < maxImages; i++) {
+                                    var image = data.data[i].images.low_resolution.url;
+                                    var thumbnail = data.data[i].images.thumbnail.url;
+                                    var link = data.data[i].link;
+                                    var likes = data.data[i].likes.count;
+                                    var comments = data.data[i].comments.count;
+​
+                                    var largerThumbnail = thumbnail.replace('s150x150', 's480x480');
+​
+                                    var caption = '';
+                                    if (data.data[i].caption) {
+                                        caption = data.data[i].caption.text;
+                                    }
+​
+                                    var content = '<a href="' + link + '" target="_blank"><img src="' + thumbnail + '" /></a>';
+​
+                                    $('#instagram_pics').append(content)
+                                }
+                            } else {
+                                console.log(data);
+                            }
+                        }
+                    });
+                }
+                $(document).ready(function () {
+                    feed();
+                });
+​
+            </script>
+        </div>	
+    </body>
+</html>
